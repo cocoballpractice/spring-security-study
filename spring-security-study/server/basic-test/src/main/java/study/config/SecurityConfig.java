@@ -9,15 +9,21 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import study.student.StudentManager;
+import study.teacher.TeacherManager;
 
 @EnableWebSecurity(debug = true) // console 창에 debug로 뜸
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomAuthDetails customAuthDetails;
+    private final StudentManager studentManager;
+    private final TeacherManager teacherManager;
 
-    public SecurityConfig(CustomAuthDetails customAuthDetails) {
+    public SecurityConfig(CustomAuthDetails customAuthDetails, StudentManager studentManager, TeacherManager teacherManager) {
         this.customAuthDetails = customAuthDetails;
+        this.studentManager = studentManager;
+        this.teacherManager = teacherManager;
     }
 
     @Override
@@ -32,6 +38,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .password(passwordEncoder().encode("3333"))
                         .roles("ADMIN"))
         ;
+        auth.authenticationProvider(studentManager);
+        auth.authenticationProvider(teacherManager);
     }
 
     @Override
